@@ -1,0 +1,21 @@
+﻿<input id="token" type="text">
+<button id="sentButton" type="button">發送</button>
+<div id="res"></div>
+<script>
+    const token = document.getElementById('token');
+    const showDiv = document.getElementById('res');
+    const button = document.getElementById('sentButton');
+    button.addEventListener('click',function ()
+    {
+       fetch('/api/API/AutTest',{
+           method:'GET',
+           headers:{'Authorization':`Bearer ${token.value}`}
+       }).then(response=>{
+           if(response.ok)
+           {
+               showDiv.textContent = "通過";
+           }
+           else  showDiv.textContent = "無權限";
+       });
+    });
+</script>
