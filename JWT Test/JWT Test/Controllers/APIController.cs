@@ -54,8 +54,45 @@ namespace JWT_Test.Controllers
 			return token;
 		}
 
+		//獲取Role沒權限的Token
+		public string LoginRoleNo()
+		{
+			var claims = new List<Claim>
+			{
+				new Claim(JwtRegisteredClaimNames.Sub, "userName"),
+				new Claim(ClaimTypes.Role, "Ad"),
+				new Claim(JwtRegisteredClaimNames.Iat,DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
+				new Claim("what","hey") 
+			};
+
+			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:KEY"]));
+
+			var jwt = new JwtSecurityToken
+			(
+				issuer: _configuration["JWT:Issuer"],
+				audience: _configuration["JWT:Audience"], 
+				claims: claims,
+				notBefore: DateTime.Now,
+				expires: DateTime.Now.AddMinutes(5),  
+				signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
+			);
+
+			var jwtt = new JwtSecurityToken();
+
+			var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+			return token;
+		}
+
+		//權限測試有登入就好
 		[Authorize]
 		public IActionResult AutTest()
+		{
+			return Ok();
+		}
+
+		//權限測試有登入並且Role="Admin"
+		[Authorize(Policy = "Role:Admin")]
+		public IActionResult AutRoleTest()
 		{
 			return Ok();
 		}
