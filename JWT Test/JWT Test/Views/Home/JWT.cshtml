@@ -1,21 +1,53 @@
 ﻿<input id="token" type="text">
-<button id="sentButton" type="button">發送</button>
+<br>
+<button id="sentButton" type="button">無Role要求</button>
+<button id="roleSentButton" type="button">有Role要求</button>
 <div id="res"></div>
 <script>
     const token = document.getElementById('token');
     const showDiv = document.getElementById('res');
     const button = document.getElementById('sentButton');
-    button.addEventListener('click',function ()
+    const roleButton = document.getElementById('roleSentButton');
+    document.addEventListener('click',function (e)
     {
-       fetch('/api/API/AutTest',{
-           method:'GET',
-           headers:{'Authorization':`Bearer ${token.value}`}
-       }).then(response=>{
-           if(response.ok)
-           {
-               showDiv.textContent = "通過";
-           }
-           else  showDiv.textContent = "無權限";
-       });
+        if(e.target.tagName === 'BUTTON')
+        {
+            let apiUrl;
+            if(e.target.id === 'sentButton') apiUrl='/api/API/AutTest';
+            else apiUrl='/api/API/AutRoleTest';
+            (async () =>
+            {
+                try
+                {
+                    const response = await fetch(apiUrl,
+                    {
+                        method:'GET',
+                        headers:{'Authorization':`Bearer ${token.value}`}
+                    });
+                    if(response.ok) showDiv.textContent = "通過";
+                    else showDiv.textContent = "無權限";
+                }
+                catch(error)
+                {
+                    console.error("發生錯誤:", error);
+                }
+            }) ();
+        }
     });
+
+
+    // button.addEventListener('click',function ()
+    // {
+    //    fetch('/api/API/AutTest',{
+    //        method:'GET',
+    //        headers:{'Authorization':`Bearer ${token.value}`}
+    //    }).then(response=>{
+    //        if(response.ok)
+    //        {
+    //            showDiv.textContent = "通過";
+    //        }
+    //        else  showDiv.textContent = "無權限";
+    //    });
+    // });
+
 </script>
