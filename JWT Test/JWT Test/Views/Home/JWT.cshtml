@@ -1,0 +1,31 @@
+﻿<br>
+<button id="sentButton" type="button">無Role要求</button>
+<button id="roleSentButton" type="button">有Role要求</button>
+<div id="res"></div>
+<script>
+    const showDiv = document.getElementById('res');
+    const button = document.getElementById('sentButton');
+    const roleButton = document.getElementById('roleSentButton');
+    document.addEventListener('click',function (e)
+    {
+        if(e.target.tagName === 'BUTTON')
+        {
+            let apiUrl;
+            if(e.target.id === 'sentButton') apiUrl='/api/API/AutTest';
+            else apiUrl='/api/API/AutRoleTest';
+            (async () =>
+            {
+                try
+                {
+                    const response = await fetch(apiUrl,{method:'GET'});
+                    if(response.ok) showDiv.textContent = "通過";
+                    else showDiv.textContent = "無權限";
+                }
+                catch(error)
+                {
+                    console.error("發生錯誤:", error);
+                }
+            }) ();
+        }
+    });
+</script>
